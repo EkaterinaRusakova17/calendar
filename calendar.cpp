@@ -3,60 +3,91 @@
 * Share-Link: https://www.onlinegdb.com/online_c++_compiler *
 * Дата: 28.11.2023                                          *
 *************************************************************/
-
 #include <iostream>
+#include <iomanip>
 
-#include <iostream>
- 
 using namespace std;
- 
-int month (int startDay, int numDays, char* name) {
-  cout << "                      " << name << endl;
-  cout << "Пн\tВт\tСр\tЧт\tПт\tСб\tВс" << endl;
-  for (int index = 1; index < startDay; ++index) {
-    cout << "\t";
-  }
-  for (int index = 1; index <= numDays; ++index) {
-    cout << index << "\t";
-    if ((startDay + index) % 7 == 1) {
-      cout << endl;
-    }
-  }
-  cout << endl;
-  cout << endl;
-  startDay = (startDay + numDays) % 7;
-  if (startDay == 0) {
-    startDay = 7;
-  }
-  return startDay;
+
+// Функция для определения високосного года
+bool isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
- 
+
+// Функция для определения количества дней в месяце
+int daysInMonth (int month, int year) {
+    if (month == 2) {
+        return isLeapYear (year) ? 29 : 28;
+    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        return 30;
+    } else {
+        return 31;
+    }
+}
+
+// Функция для вывода календаря
+void printCalendar(int year) {
+
+    for (int month = 1; month <= 12; ++month) {
+        // Вывод названия месяца
+        switch (month) {
+            case 1: cout << "Январь   "; 
+            break;
+            case 2: cout << "Февраль  "; 
+            break;
+            case 3: cout << "Март     "; 
+            break;
+            case 4: cout << "Апрель   "; 
+            break;
+            case 5: cout << "Май      "; 
+            break;
+            case 6: cout << "Июнь     "; 
+            break;
+            case 7: cout << "Июль     "; 
+            break;
+            case 8: cout << "Август   "; 
+            break;
+            case 9: cout << "Сентябрь "; 
+            break;
+            case 10: cout << "Октябрь  "; 
+            break;
+            case 11: cout << "Ноябрь   "; 
+            break;
+            case 12: cout << "Декабрь  "; 
+            break;
+        }
+
+        cout << "\nПн Вт Ср Чт Пт Сб Вс\n";
+
+        int totalDays = daysInMonth(month, year);
+        int currentDay = 1;
+        int startingDay = (year - 1 + (year - 1) / 4 - (year - 1) / 100 + (year - 1) / 400 + (13 * 13 + 8) / 5) % 7;
+
+        for (int index = 0; index < startingDay; ++index) {
+            cout << "   ";
+        }
+
+        while (currentDay <= totalDays) {
+            for (int index = startingDay; index < 7 && currentDay <= totalDays; ++index) {
+                cout << setw(2) << currentDay << " ";
+                ++currentDay;
+            }
+            startingDay = 0;
+            cout << endl;
+        }
+    
+        // Вывод пустой строки между месяцами
+        cout << endl;
+        if (month % 3 == 0 && month != 12) {
+            cout << "-------------------------\n\n";
+    }
+}
+
 int main() {
- 
-  int leap, notLeap, Feb, index; 
-  cout << "Год високосный? (0 - нет; 1 - да):";
-  cin >> leap;
-  if (leap == 1) {
-    Feb = 29;
-  } else {
-    Feb = 28;
-  }
- 
-  cout << "Введите с какого дня недели начинается Январь (1-7 = пн-вс):";
-  cin >> notLeap;
-  cout << endl;
- 
-  notLeap = month(notLeap, 31, "Январь");
-  notLeap = month(notLeap, Feb, "Февраль");
-  notLeap = month(notLeap, 31, "Март");
-  notLeap = month(notLeap, 30, "Апрель");
-  notLeap = month(notLeap, 31, "Май");
-  notLeap = month(notLeap, 30, "Июнь");
-  notLeap = month(notLeap, 31, "Июль");
-  notLeap = month(notLeap, 31, "Август");
-  notLeap = month(notLeap, 30, "Сентябрь");
-  notLeap = month(notLeap, 31, "Октябрь");
-  notLeap = month(notLeap, 30, "Ноябрь");
-  notLeap = month(notLeap, 31, "Декабрь");
-  system("pause");
+    int year;
+    cout << "Введите год: ";
+    cin >> year;
+
+    printCalendar(year);
+
+    return 0;
 }
